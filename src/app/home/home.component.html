@@ -1,2 +1,94 @@
-<h3>Home Component</h3>
-<p>Welcome to Angular Seed</p>
+<div class="container">
+	<h3>Employee Form</h3>
+	<!-- NOTE:
+		 https://angular.io/api/forms/NgForm
+		 https://angular.io/api/forms/NgModel
+		 https://www.concretepage.com/angular-2/angular-2-ngform-with-ngmodel-directive-example
+
+		 ngForm:
+		 When we have a form in Angular template, Angular is going to create a directive for this form.
+		 This directive is called ngForm. As soon as you import the FormsModule, this directive becomes 
+		 active by default on all <form> tags. ngForm creates a top-level FormGroup instance and binds it to a 
+		 form to track aggregate form value and validation status.
+
+		 You can export the directive into a local template variable using ngForm as the key (ex: #myForm="ngForm"). 
+		 This is optional, but useful. Many properties from the underlying FormGroup instance are duplicated on 
+		 the directive itself, so a reference to it will give you access to the aggregate value and validity 
+		 status of the form, as well as user interaction properties like dirty and touched.
+
+		 You can listen to the directive's ngSubmit event to be notified when the user has triggered a form submission. 
+		 The ngSubmit event will be emitted with the original form submission event.
+
+		 ngModel:
+		 NgModel directive creates a FormControl instance from a domain model created in class and binds it 
+		 to a form control element. FormControl keeps track of user interaction and validation status of the 
+		 form control. NgModel can be used standalone as well as with the parent form.
+
+		 If used within a parent form, the directive will also register itself with the form as a child control.
+
+		 To use FormControl, all you need is the ngModel selector to activate it.
+
+		 NgModel accepts a domain model as an optional Input. If you have a one-way binding to ngModel with [] syntax, changing 
+		 the value of the domain model in the component class will set the value in the view. If you have a two-way binding 
+		 with [()] syntax, the value in the UI will always be synced back to the domain model in your class as well.
+		 If we use neither one-way binding not two-way binding still we need to use ngModel attribute in fields when using with 
+		 parent form as following: <input name="message" ngModel> 
+		 Otherwise this field will not be registered with parent form and its value will not be passed to our class on form submit. 
+
+		 If you wish to inspect the properties of the associated FormControl (like validity state), you can also export the 
+		 directive into a local template variable using ngModel as the key (ex: #myVar="ngModel"). You can then access the 
+		 control using the directive's control property, but most properties you'll need (like valid and dirty) will fall 
+		 through to the control anyway, so you can access them directly.
+		 
+		 novalidate turns off the auto validation of the form.
+	-->
+	<form #form="ngForm" novalidate>
+		<!-- NOTE: https://stackoverflow.com/questions/44840735/change-vs-ngmodelchange-in-angular 
+			 Overall, ngModelChange is getting a value as its parameter to the callback method, while change
+			 is getting an event
+			 A binding occured in text input will bind to the text in the box
+		-->
+		<div class="form-group">
+			<label for="firstNameId">First Name</label>
+			<input id="firstNameId" class="form-control" type="text" name="first-name" [(ngModel)]="model.firstName">
+		</div>
+		<div class="form-group">
+			<label for="lastNameId">Last Name</label>
+			<input id="lastNameId" class="form-control" type="text" name="last-name" [(ngModel)]="model.lastName">
+		</div>
+
+		<!-- NOTE: Binding to a checkbox is easy, just two-way bind it to a boolean variable and that's it -->
+		<div class="checkbox">
+			<label>
+				<input type="checkbox" name="is-full-time" [(ngModel)]="model.isFullTime">Full Time Employee
+			</label>
+		</div>
+
+		<!-- NOTE: If we want to data-bind a radio button, we need to make sure that every button should have the same name.
+			 If this is a two-way binding, the variable passed to ngModel is going to get whatever the HTML input 'value' attribute has -->
+		<label>Payment Type</label>
+		<div class="radio">
+			<label>
+				<input type="radio" name="pay-type" value="w2" checked [(ngModel)]="model.paymentType">W2
+			</label>
+		</div>
+		<div class="radio">
+			<label>
+				<input type="radio" name="pay-type" value="1099" [(ngModel)]="model.paymentType">1099
+			</label>
+		</div>
+
+		<!-- NOTE: Binding to a select is easy, just give the select a name and bind it -->
+		<div class="form-group">
+			<label>Primary Language</label>
+			<select class="form-control" name="primary-language" [(ngModel)]="model.primaryLanguage">
+				<option *ngFor="let lang of languages">{{lang}}</option>
+			</select>
+		</div>
+
+		<button class="btn btn-primary" type="submit">OK</button>
+	</form>
+	Model: {{ model | json }}
+	<br>
+	Angular: {{ form.value | json }}
+</div>
