@@ -4,6 +4,7 @@
 		 https://angular.io/api/forms/NgForm
 		 https://angular.io/api/forms/NgModel
 		 https://www.concretepage.com/angular-2/angular-2-ngform-with-ngmodel-directive-example
+		 http://blog.ng-book.com/the-ultimate-guide-to-forms-in-angular-2/
 
 		 ngForm:
 		 When we have a form in Angular template, Angular is going to create a directive for this form.
@@ -42,25 +43,51 @@
 		 
 		 novalidate turns off the auto validation of the form.
 	-->
-	<form #form="ngForm" novalidate>
+	<form #form="ngForm" (submit)="submitForm(form)" novalidate>
 		<!-- NOTE: https://stackoverflow.com/questions/44840735/change-vs-ngmodelchange-in-angular 
 			 Overall, ngModelChange is getting a value as its parameter to the callback method, while change
 			 is getting an event
+
 			 A binding occured in text input will bind to the text in the box
+
+
+			 How to access a input field:
+			 Since we've imported NgForm into template variable 'form', we can access each input field by name.
+			 For example, form.form.value.firstName is referring to the text input of first name.
+
+			 Class Binding:
+			 https://juristr.com/blog/2016/01/learning-ng2-dynamic-styles/
+			 https://docs.angularjs.org/api/ng/directive/ngClass
 		-->
-		<div class="form-group">
-			<label for="firstNameId">First Name</label>
-			<input id="firstNameId" class="form-control" type="text" name="first-name" [(ngModel)]="model.firstName">
+		<div class="form-group" [class.has-error]="firstName.touched && model.firstName.length === 0">
+			<label class="control-label" for="firstNameId">First Name</label>
+			<input id="firstNameId" class="form-control" type="text" name="firstName" [(ngModel)]="model.firstName" #firstName="ngModel">
 		</div>
+		<!-- NOTE:
+			touched && untouched: If an input gets focus but then loses focus, it will transform from untouched to touched
+			pristine && dirty: If the content of an input has changed, pristine is transformed to dirty
+			valid && invalid: Self-explanatory
+
+			Each one is actually an attribute of ngModel directive. For example, we can assign ngModel to #firstName, and then access 
+			touched, untouched, dirty, pristine attributes of firstName.
+			Each attribute actually has a corresponding CSS class, and the name of a CSS class is the name of the attribute prefixed with "ng-"
+		 -->
+		<h4>Is Touched: {{ firstName.touched }}</h4>
+		<h4>Is Dirty: {{ firstName.dirty }}</h4>
+		<h4>Is Valid: {{ firstName.valid }}</h4>
+		<div *ngIf="firstName.touched && model.firstName.length === 0" class="alert alert-danger">
+			First Name is REQUIRED!
+		</div>
+
 		<div class="form-group">
 			<label for="lastNameId">Last Name</label>
-			<input id="lastNameId" class="form-control" type="text" name="last-name" [(ngModel)]="model.lastName">
+			<input id="lastNameId" class="form-control" type="text" name="lastName" [(ngModel)]="model.lastName">
 		</div>
 
 		<!-- NOTE: Binding to a checkbox is easy, just two-way bind it to a boolean variable and that's it -->
 		<div class="checkbox">
 			<label>
-				<input type="checkbox" name="is-full-time" [(ngModel)]="model.isFullTime">Full Time Employee
+				<input type="checkbox" name="isFullTime" [(ngModel)]="model.isFullTime">Full Time Employee
 			</label>
 		</div>
 
@@ -69,26 +96,36 @@
 		<label>Payment Type</label>
 		<div class="radio">
 			<label>
-				<input type="radio" name="pay-type" value="w2" checked [(ngModel)]="model.paymentType">W2
+				<input type="radio" name="paymentType" value="w2" checked [(ngModel)]="model.paymentType">W2
 			</label>
 		</div>
 		<div class="radio">
 			<label>
-				<input type="radio" name="pay-type" value="1099" [(ngModel)]="model.paymentType">1099
+				<input type="radio" name="paymentType" value="1099" [(ngModel)]="model.paymentType">1099
 			</label>
 		</div>
 
-		<!-- NOTE: Binding to a select is easy, just give the select a name and bind it -->
-		<div class="form-group">
-			<label>Primary Language</label>
-			<select class="form-control" name="primary-language" [(ngModel)]="model.primaryLanguage">
+		<!-- NOTE: Binding to a select is easy, just give the select a name and bind it 
+			 
+			 'blur' event is fired when the field loses focus
+		-->
+		<div class="form-group" [class.has-error]="hasPrimaryLanguageError">
+			<label class="control-label">Primary Language</label>
+			<select class="form-control" #primaryLanguage name="primaryLanguage" 
+					[(ngModel)]="model.primaryLanguage" 
+					(blur)="validatePrimaryLanguage(primaryLanguage.value)"
+					(change)="validatePrimaryLanguage(primaryLanguage.value)"> 
 				<option *ngFor="let lang of languages">{{lang}}</option>
 			</select>
 		</div>
 
 		<button class="btn btn-primary" type="submit">OK</button>
+
+		<!-- We can access the form by using the variable that's assigned to NgForm -->
+		<h4>Is form pristine: {{ form.pristine }}</h4>
 	</form>
 	Model: {{ model | json }}
 	<br>
 	Angular: {{ form.value | json }}
+	<br>
 </div>
