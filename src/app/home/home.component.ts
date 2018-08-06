@@ -10,7 +10,7 @@ import { Employee } from '../models/employee.model';
 export class HomeComponent {
 	defaultLang = 'Select a Language...';
 	languages = [this.defaultLang, 'English', 'Spanish', 'Chinese', 'Others'];
-	model = new Employee('Erick', 'Zhou', true, 'w2', this.defaultLang);
+	model = new Employee('', '', '', true, 'w2', this.defaultLang);
 	hasPrimaryLanguageError = false;
 
 	validatePrimaryLanguage(lang) {
@@ -18,6 +18,7 @@ export class HomeComponent {
 	}
 
 	submitForm(form: NgForm) {
+		console.log(form);
 		this.validatePrimaryLanguage(form.form.value.primaryLanguage);
 		if (!this.hasPrimaryLanguageError) {
 			console.log(form.form.value);

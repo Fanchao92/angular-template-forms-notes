@@ -27,7 +27,7 @@
 
 		 If used within a parent form, the directive will also register itself with the form as a child control.
 
-		 To use FormControl, all you need is the ngModel selector to activate it.
+		 To use FormControl, all you need is the ngModel selector to activate .
 
 		 NgModel accepts a domain model as an optional Input. If you have a one-way binding to ngModel with [] syntax, changing 
 		 the value of the domain model in the component class will set the value in the view. If you have a two-way binding 
@@ -58,6 +58,10 @@
 			 Class Binding:
 			 https://juristr.com/blog/2016/01/learning-ng2-dynamic-styles/
 			 https://docs.angularjs.org/api/ng/directive/ngClass
+
+			 The following 2 are the same:
+			 [class.has-error]="firstName.touched && model.firstName.length === 0"
+			 ng-class="{'has-error': firstName.touched && model.firstName.length === 0}"
 		-->
 		<div class="form-group" [class.has-error]="firstName.touched && model.firstName.length === 0">
 			<label class="control-label" for="firstNameId">First Name</label>
@@ -83,6 +87,14 @@
 			<label for="lastNameId">Last Name</label>
 			<input id="lastNameId" class="form-control" type="text" name="lastName" [(ngModel)]="model.lastName">
 		</div>
+
+		<div class="form-group">
+			<label for="emailId">Email</label>
+			<input id="emailId" class="form-control" type="text" name="email" emailValidator [(ngModel)]="model.email" #email="ngModel">
+		</div>
+		<h4>Is Touched: {{ email.touched }}</h4>
+		<h4>Is Dirty: {{ email.dirty }}</h4>
+		<h4>Is Valid: {{ email.valid }}</h4>
 
 		<!-- NOTE: Binding to a checkbox is easy, just two-way bind it to a boolean variable and that's it -->
 		<div class="checkbox">
